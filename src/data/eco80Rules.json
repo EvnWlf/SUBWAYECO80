@@ -1,0 +1,723 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "product": "Danfoss ECO80 Directional Valve Group",
+    "description": "Configuration rules for ValveBuilderMP wizard. Two paths split at Load Sense (LS) question.",
+    "paths": ["standard", "load_sense"],
+    "maxSections": 12
+  },
+
+  "questions": {
+    "Q_LS": {
+      "id": "Q_LS",
+      "label": "Do you require Load Sense functionality?",
+      "type": "single_select",
+      "options": [
+        { "value": "no",  "label": "No – Fixed displacement pump (Open Center)" },
+        { "value": "yes", "label": "Yes – Variable displacement pump (Closed Center / LS)" }
+      ],
+      "next": {
+        "no":  "Q_SOLENOID",
+        "yes": "Q_LS_SOLENOID"
+      }
+    },
+
+    "Q_SOLENOID": {
+      "id": "Q_SOLENOID",
+      "label": "Do your work sections require solenoid (electro-hydraulic) actuation?",
+      "hint": "PPRV (Pilot Pressure Reducer Valve) is required for any solenoid actuator.",
+      "type": "single_select",
+      "path": "standard",
+      "options": [
+        { "value": "no",  "label": "No – Mechanical actuation only" },
+        { "value": "yes", "label": "Yes – Solenoid / electro-hydraulic actuation required" }
+      ],
+      "next": {
+        "no":  "Q_EVPX",
+        "yes": "Q_EVPX"
+      }
+    },
+
+    "Q_EVPX": {
+      "id": "Q_EVPX",
+      "label": "Do you need electric unloading of the pump (EVPX)?",
+      "hint": "EVPX is an electric unload valve. Only available on Open Center with PPRV.",
+      "type": "single_select",
+      "path": "standard",
+      "options": [
+        { "value": "no",  "label": "No" },
+        { "value": "yes", "label": "Yes – Electric unload valve (EVPX)" }
+      ],
+      "next": {
+        "no":  "Q_NUM_SECTIONS",
+        "yes": "Q_EVPX_VOLTAGE"
+      }
+    },
+
+    "Q_EVPX_VOLTAGE": {
+      "id": "Q_EVPX_VOLTAGE",
+      "label": "Select EVPX coil voltage",
+      "type": "single_select",
+      "path": "standard",
+      "options": [
+        { "value": "12v", "label": "12 Vcc" },
+        { "value": "24v", "label": "24 Vcc" }
+      ],
+      "next": {
+        "12v": "Q_NUM_SECTIONS",
+        "24v": "Q_NUM_SECTIONS"
+      }
+    },
+
+    "Q_LS_SOLENOID": {
+      "id": "Q_LS_SOLENOID",
+      "label": "Do your work sections require solenoid (electro-hydraulic) actuation?",
+      "hint": "PPRV is required for solenoid actuation. Closed Center EVP includes PPRV.",
+      "type": "single_select",
+      "path": "load_sense",
+      "options": [
+        { "value": "no",  "label": "No – Mechanical actuation only" },
+        { "value": "yes", "label": "Yes – Solenoid / electro-hydraulic actuation" }
+      ],
+      "next": {
+        "no":  "Q_LS_NUM_SECTIONS",
+        "yes": "Q_LS_NUM_SECTIONS"
+      }
+    },
+
+    "Q_NUM_SECTIONS": {
+      "id": "Q_NUM_SECTIONS",
+      "label": "How many work sections (EVB) do you need?",
+      "hint": "Maximum 12 sections. Each section is one directional control circuit.",
+      "type": "number_input",
+      "path": "standard",
+      "min": 1,
+      "max": 12,
+      "next": "Q_BODY_TYPE"
+    },
+
+    "Q_LS_NUM_SECTIONS": {
+      "id": "Q_LS_NUM_SECTIONS",
+      "label": "How many work sections (EVB) do you need?",
+      "hint": "Maximum 12 sections.",
+      "type": "number_input",
+      "path": "load_sense",
+      "min": 1,
+      "max": 12,
+      "next": "Q_LS_BODY_TYPE"
+    },
+
+    "Q_BODY_TYPE": {
+      "id": "Q_BODY_TYPE",
+      "label": "Select work section body type (EVB)",
+      "hint": "Medium body allows PVLP shock valves and PVLA anti-cavitation valves on A/B ports.",
+      "type": "single_select",
+      "path": "standard",
+      "options": [
+        { "value": "low_mech", "label": "Low body – Mechanical (no PVLP/PVLA cavities)" },
+        { "value": "med_mech", "label": "Medium body – Mechanical (with PVLP/PVLA cavities)" },
+        { "value": "low_eh",   "label": "Low body – Electro-hydraulic (no PVLP/PVLA cavities)" },
+        { "value": "med_eh",   "label": "Medium body – Electro-hydraulic (with PVLP/PVLA cavities)" }
+      ],
+      "next": {
+        "low_mech": "Q_PVLP",
+        "med_mech": "Q_PVLP",
+        "low_eh":   "Q_PVLP",
+        "med_eh":   "Q_PVLP"
+      }
+    },
+
+    "Q_LS_BODY_TYPE": {
+      "id": "Q_LS_BODY_TYPE",
+      "label": "Select work section body type (EVB)",
+      "type": "single_select",
+      "path": "load_sense",
+      "options": [
+        { "value": "low_mech", "label": "Low body – Mechanical" },
+        { "value": "med_mech", "label": "Medium body – Mechanical (with PVLP/PVLA cavities)" },
+        { "value": "low_eh",   "label": "Low body – Electro-hydraulic" },
+        { "value": "med_eh",   "label": "Medium body – Electro-hydraulic (with PVLP/PVLA cavities)" }
+      ],
+      "next": {
+        "low_mech": "Q_LS_PVLP",
+        "med_mech": "Q_LS_PVLP",
+        "low_eh":   "Q_LS_PVLP",
+        "med_eh":   "Q_LS_PVLP"
+      }
+    },
+
+    "Q_PVLP": {
+      "id": "Q_PVLP",
+      "label": "Do you need shock / anti-cavitation valves (PVLP / PVLA) on the work ports?",
+      "hint": "Requires medium body (EVB). PVLP = shock valve, PVLA = anti-cavitation.",
+      "type": "single_select",
+      "path": "standard",
+      "options": [
+        { "value": "none",      "label": "No – None required" },
+        { "value": "pvla_only", "label": "PVLA only – Anti-cavitation plug" },
+        { "value": "pvlp",      "label": "PVLP – Shock valve (specify pressure)" },
+        { "value": "both",      "label": "Both PVLP + PVLA" }
+      ],
+      "requires_medium_body": ["pvla_only", "pvlp", "both"],
+      "next": {
+        "none":      "Q_ACTUATION",
+        "pvla_only": "Q_ACTUATION",
+        "pvlp":      "Q_PVLP_PRESSURE",
+        "both":      "Q_PVLP_PRESSURE"
+      }
+    },
+
+    "Q_LS_PVLP": {
+      "id": "Q_LS_PVLP",
+      "label": "Do you need shock / anti-cavitation valves on the work ports?",
+      "type": "single_select",
+      "path": "load_sense",
+      "options": [
+        { "value": "none",      "label": "No – None required" },
+        { "value": "pvla_only", "label": "PVLA only – Anti-cavitation plug" },
+        { "value": "pvlp",      "label": "PVLP – Shock valve (specify pressure)" },
+        { "value": "both",      "label": "Both PVLP + PVLA" }
+      ],
+      "requires_medium_body": ["pvla_only", "pvlp", "both"],
+      "next": {
+        "none":      "Q_LS_ACTUATION",
+        "pvla_only": "Q_LS_ACTUATION",
+        "pvlp":      "Q_LS_PVLP_PRESSURE",
+        "both":      "Q_LS_PVLP_PRESSURE"
+      }
+    },
+
+    "Q_PVLP_PRESSURE": {
+      "id": "Q_PVLP_PRESSURE",
+      "label": "Select PVLP shock valve pressure setting (bar)",
+      "type": "single_select",
+      "path": "standard",
+      "options": [
+        { "value": "32",  "label": "32 bar  [460 psi]" },
+        { "value": "50",  "label": "50 bar  [725 psi]" },
+        { "value": "63",  "label": "63 bar  [914 psi]" },
+        { "value": "80",  "label": "80 bar  [1160 psi]" },
+        { "value": "100", "label": "100 bar [1450 psi]" },
+        { "value": "125", "label": "125 bar [1813 psi]" },
+        { "value": "140", "label": "140 bar [2031 psi]" },
+        { "value": "150", "label": "150 bar [2175 psi]" },
+        { "value": "160", "label": "160 bar [2320 psi]" },
+        { "value": "175", "label": "175 bar [2538 psi]" },
+        { "value": "190", "label": "190 bar [2755 psi]" },
+        { "value": "210", "label": "210 bar [3045 psi]" },
+        { "value": "230", "label": "230 bar [3335 psi]" },
+        { "value": "240", "label": "240 bar [3480 psi]" },
+        { "value": "250", "label": "250 bar [3625 psi]" },
+        { "value": "265", "label": "265 bar [3845 psi]" },
+        { "value": "280", "label": "280 bar [4061 psi]" },
+        { "value": "300", "label": "300 bar [4351 psi]" },
+        { "value": "320", "label": "320 bar [4641 psi]" },
+        { "value": "adj_low",  "label": "Adjustable 121–250 bar" },
+        { "value": "adj_high", "label": "Adjustable 251–285 bar" }
+      ],
+      "next": "Q_ACTUATION"
+    },
+
+    "Q_LS_PVLP_PRESSURE": {
+      "id": "Q_LS_PVLP_PRESSURE",
+      "label": "Select PVLP shock valve pressure setting (bar)",
+      "type": "single_select",
+      "path": "load_sense",
+      "options": [
+        { "value": "32",  "label": "32 bar  [460 psi]" },
+        { "value": "50",  "label": "50 bar  [725 psi]" },
+        { "value": "63",  "label": "63 bar  [914 psi]" },
+        { "value": "80",  "label": "80 bar  [1160 psi]" },
+        { "value": "100", "label": "100 bar [1450 psi]" },
+        { "value": "125", "label": "125 bar [1813 psi]" },
+        { "value": "140", "label": "140 bar [2031 psi]" },
+        { "value": "150", "label": "150 bar [2175 psi]" },
+        { "value": "160", "label": "160 bar [2320 psi]" },
+        { "value": "175", "label": "175 bar [2538 psi]" },
+        { "value": "190", "label": "190 bar [2755 psi]" },
+        { "value": "210", "label": "210 bar [3045 psi]" },
+        { "value": "230", "label": "230 bar [3335 psi]" },
+        { "value": "240", "label": "240 bar [3480 psi]" },
+        { "value": "250", "label": "250 bar [3625 psi]" },
+        { "value": "265", "label": "265 bar [3845 psi]" },
+        { "value": "280", "label": "280 bar [4061 psi]" },
+        { "value": "300", "label": "300 bar [4351 psi]" },
+        { "value": "320", "label": "320 bar [4641 psi]" },
+        { "value": "adj_low",  "label": "Adjustable 121–250 bar" },
+        { "value": "adj_high", "label": "Adjustable 251–285 bar" }
+      ],
+      "next": "Q_LS_ACTUATION"
+    },
+
+    "Q_ACTUATION": {
+      "id": "Q_ACTUATION",
+      "label": "Select actuation type for the work sections",
+      "type": "single_select",
+      "path": "standard",
+      "options": [
+        { "value": "mechanical",   "label": "Mechanical (EVOS / EVM)" },
+        { "value": "hydraulic",    "label": "Hydraulic (EVH)" },
+        { "value": "eh_prop",      "label": "Electro-hydraulic proportional (EVHC)" },
+        { "value": "eh_onoff",     "label": "Electro-hydraulic ON/OFF (EVHCO)" },
+        { "value": "pneumatic",    "label": "Pneumatic (EVPN)" },
+        { "value": "electropneu",  "label": "Electro-pneumatic (EVPN electric)" }
+      ],
+      "next": {
+        "mechanical":  "Q_MECH_TYPE",
+        "hydraulic":   "Q_SPOOL_CENTER",
+        "eh_prop":     "Q_EH_VOLTAGE",
+        "eh_onoff":    "Q_EHO_VOLTAGE",
+        "pneumatic":   "Q_SPOOL_CENTER",
+        "electropneu": "Q_EPNEU_VOLTAGE"
+      }
+    },
+
+    "Q_LS_ACTUATION": {
+      "id": "Q_LS_ACTUATION",
+      "label": "Select actuation type for the work sections",
+      "type": "single_select",
+      "path": "load_sense",
+      "options": [
+        { "value": "mechanical",   "label": "Mechanical (EVOS / EVM)" },
+        { "value": "hydraulic",    "label": "Hydraulic (EVH)" },
+        { "value": "eh_prop",      "label": "Electro-hydraulic proportional (EVHC)" },
+        { "value": "eh_onoff",     "label": "Electro-hydraulic ON/OFF (EVHCO)" },
+        { "value": "pneumatic",    "label": "Pneumatic (EVPN)" },
+        { "value": "electropneu",  "label": "Electro-pneumatic (EVPN electric)" }
+      ],
+      "next": {
+        "mechanical":  "Q_LS_MECH_TYPE",
+        "hydraulic":   "Q_LS_SPOOL_CENTER",
+        "eh_prop":     "Q_LS_EH_VOLTAGE",
+        "eh_onoff":    "Q_LS_EHO_VOLTAGE",
+        "pneumatic":   "Q_LS_SPOOL_CENTER",
+        "electropneu": "Q_LS_EPNEU_VOLTAGE"
+      }
+    },
+
+    "Q_MECH_TYPE": {
+      "id": "Q_MECH_TYPE",
+      "label": "Select mechanical actuator type",
+      "type": "single_select",
+      "path": "standard",
+      "options": [
+        { "value": "evos_std",    "label": "EVOS – Standard mechanical lever" },
+        { "value": "evos_robust", "label": "EVOS – Robust lever" },
+        { "value": "evos_thru",   "label": "EVOS – Through action (no lever)" },
+        { "value": "evm_lever",   "label": "EVM – Lever with adjustment screws" },
+        { "value": "evm_plain",   "label": "EVM – Without lever" },
+        { "value": "evme_spring", "label": "EVME – Spring center / detent" },
+        { "value": "evme_thru",   "label": "EVME – Through action" },
+        { "value": "evme_micro",  "label": "EVME – Micro switch NO" },
+        { "value": "evc",         "label": "EVC – Cover only (no actuation)" }
+      ],
+      "next": "Q_SPOOL_CENTER"
+    },
+
+    "Q_LS_MECH_TYPE": {
+      "id": "Q_LS_MECH_TYPE",
+      "label": "Select mechanical actuator type",
+      "type": "single_select",
+      "path": "load_sense",
+      "options": [
+        { "value": "evos_std",    "label": "EVOS – Standard mechanical lever" },
+        { "value": "evos_robust", "label": "EVOS – Robust lever" },
+        { "value": "evos_thru",   "label": "EVOS – Through action (no lever)" },
+        { "value": "evm_lever",   "label": "EVM – Lever with adjustment screws" },
+        { "value": "evm_plain",   "label": "EVM – Without lever" },
+        { "value": "evme_spring", "label": "EVME – Spring center / detent" },
+        { "value": "evme_thru",   "label": "EVME – Through action" },
+        { "value": "evme_micro",  "label": "EVME – Micro switch NO" },
+        { "value": "evc",         "label": "EVC – Cover only (no actuation)" }
+      ],
+      "next": "Q_LS_SPOOL_CENTER"
+    },
+
+    "Q_EH_VOLTAGE": {
+      "id": "Q_EH_VOLTAGE",
+      "label": "Select EVHC proportional coil voltage",
+      "type": "single_select",
+      "path": "standard",
+      "options": [
+        { "value": "12v", "label": "12 Vcc" },
+        { "value": "24v", "label": "24 Vcc" }
+      ],
+      "next": "Q_SPOOL_CENTER"
+    },
+
+    "Q_LS_EH_VOLTAGE": {
+      "id": "Q_LS_EH_VOLTAGE",
+      "label": "Select EVHC proportional coil voltage",
+      "type": "single_select",
+      "path": "load_sense",
+      "options": [
+        { "value": "12v", "label": "12 Vcc" },
+        { "value": "24v", "label": "24 Vcc" }
+      ],
+      "next": "Q_LS_SPOOL_CENTER"
+    },
+
+    "Q_EHO_VOLTAGE": {
+      "id": "Q_EHO_VOLTAGE",
+      "label": "Select EVHCO ON/OFF coil voltage",
+      "type": "single_select",
+      "path": "standard",
+      "options": [
+        { "value": "12v", "label": "12 Vcc" },
+        { "value": "24v", "label": "24 Vcc" }
+      ],
+      "next": "Q_SPOOL_CENTER"
+    },
+
+    "Q_LS_EHO_VOLTAGE": {
+      "id": "Q_LS_EHO_VOLTAGE",
+      "label": "Select EVHCO ON/OFF coil voltage",
+      "type": "single_select",
+      "path": "load_sense",
+      "options": [
+        { "value": "12v", "label": "12 Vcc" },
+        { "value": "24v", "label": "24 Vcc" }
+      ],
+      "next": "Q_LS_SPOOL_CENTER"
+    },
+
+    "Q_EPNEU_VOLTAGE": {
+      "id": "Q_EPNEU_VOLTAGE",
+      "label": "Select electro-pneumatic (EVPN) coil voltage",
+      "type": "single_select",
+      "path": "standard",
+      "options": [
+        { "value": "12v",     "label": "12 Vcc – DEUTSCH connector" },
+        { "value": "24v",     "label": "24 Vcc – DEUTSCH connector" },
+        { "value": "24v_amp", "label": "24 Vcc – AMP connector" }
+      ],
+      "next": "Q_SPOOL_CENTER"
+    },
+
+    "Q_LS_EPNEU_VOLTAGE": {
+      "id": "Q_LS_EPNEU_VOLTAGE",
+      "label": "Select electro-pneumatic (EVPN) coil voltage",
+      "type": "single_select",
+      "path": "load_sense",
+      "options": [
+        { "value": "12v",     "label": "12 Vcc – DEUTSCH connector" },
+        { "value": "24v",     "label": "24 Vcc – DEUTSCH connector" },
+        { "value": "24v_amp", "label": "24 Vcc – AMP connector" }
+      ],
+      "next": "Q_LS_SPOOL_CENTER"
+    },
+
+    "Q_SPOOL_CENTER": {
+      "id": "Q_SPOOL_CENTER",
+      "label": "Select spool center type (EVBS)",
+      "hint": "Open Center = pump flows to tank at neutral. Closed Center = pump holds pressure. Restricted = controlled bleed.",
+      "type": "single_select",
+      "path": "standard",
+      "options": [
+        { "value": "closed",     "label": "Closed center (4-way)" },
+        { "value": "open",       "label": "Open center (4-way)" },
+        { "value": "restricted", "label": "Restricted center (4-way)" },
+        { "value": "closed_3w",  "label": "Closed center (3-way)" }
+      ],
+      "next": "Q_SPOOL_FLOW"
+    },
+
+    "Q_LS_SPOOL_CENTER": {
+      "id": "Q_LS_SPOOL_CENTER",
+      "label": "Select spool center type (EVBS)",
+      "type": "single_select",
+      "path": "load_sense",
+      "options": [
+        { "value": "closed",     "label": "Closed center (4-way)" },
+        { "value": "open",       "label": "Open center (4-way)" },
+        { "value": "restricted", "label": "Restricted center (4-way)" },
+        { "value": "closed_3w",  "label": "Closed center (3-way)" }
+      ],
+      "next": "Q_LS_SPOOL_FLOW"
+    },
+
+    "Q_SPOOL_FLOW": {
+      "id": "Q_SPOOL_FLOW",
+      "label": "Select spool rated flow (LPM)",
+      "hint": "Available flows depend on spool center type and actuation.",
+      "type": "single_select",
+      "path": "standard",
+      "options": [
+        { "value": "8",   "label": "8 LPM" },
+        { "value": "25",  "label": "25 LPM" },
+        { "value": "40",  "label": "40 LPM" },
+        { "value": "60",  "label": "60 LPM" },
+        { "value": "80",  "label": "80 LPM" },
+        { "value": "100", "label": "100 LPM" }
+      ],
+      "next": "Q_ENDPLATE"
+    },
+
+    "Q_LS_SPOOL_FLOW": {
+      "id": "Q_LS_SPOOL_FLOW",
+      "label": "Select spool rated flow (LPM)",
+      "type": "single_select",
+      "path": "load_sense",
+      "options": [
+        { "value": "8",   "label": "8 LPM" },
+        { "value": "25",  "label": "25 LPM" },
+        { "value": "40",  "label": "40 LPM" },
+        { "value": "60",  "label": "60 LPM" },
+        { "value": "80",  "label": "80 LPM" },
+        { "value": "100", "label": "100 LPM" }
+      ],
+      "next": "Q_LS_ENDPLATE"
+    },
+
+    "Q_ENDPLATE": {
+      "id": "Q_ENDPLATE",
+      "label": "Select end plate type (EVO)",
+      "type": "single_select",
+      "path": "standard",
+      "options": [
+        { "value": "std",   "label": "Standard – No LX port" },
+        { "value": "lx_bsp","label": "With LX port – 1/8 BSP" },
+        { "value": "lx_sae","label": "With LX port – 7/16-20 SAE" },
+        { "value": "pneu",  "label": "With pneumatic port – 1/8 BSP" }
+      ],
+      "next": null,
+      "terminal": true
+    },
+
+    "Q_LS_ENDPLATE": {
+      "id": "Q_LS_ENDPLATE",
+      "label": "Select end plate type (EVO)",
+      "type": "single_select",
+      "path": "load_sense",
+      "options": [
+        { "value": "std",   "label": "Standard – No LX port" },
+        { "value": "lx_bsp","label": "With LX port – 1/8 BSP" },
+        { "value": "lx_sae","label": "With LX port – 7/16-20 SAE" },
+        { "value": "pneu",  "label": "With pneumatic port – 1/8 BSP" }
+      ],
+      "next": null,
+      "terminal": true
+    }
+  },
+
+  "components": {
+
+    "EVP": {
+      "description": "Pump inlet module (Tapa de Entrada)",
+      "note": "Open Center = standard path. Closed Center = Load Sense path.",
+      "items": [
+        { "id": "EVP_OC_PPRV",        "pn": "11173010", "label": "Open Center with PPRV (SAE ports)",      "pump": "fixed",    "pprv": true,  "center": "open",   "evpx": false },
+        { "id": "EVP_CC_PPRV",        "pn": "11173011", "label": "Closed Center with PPRV (SAE ports)",    "pump": "variable", "pprv": true,  "center": "closed", "evpx": false },
+        { "id": "EVP_OC_NO_PPRV",     "pn": "11172981", "label": "Open Center without PPRV (SAE ports)",   "pump": "fixed",    "pprv": false, "center": "open",   "evpx": false },
+        { "id": "EVP_CC_NO_PPRV",     "pn": "11173002", "label": "Closed Center without PPRV (SAE ports)", "pump": "variable", "pprv": false, "center": "closed", "evpx": false },
+        { "id": "EVP_OC_PPRV_EVPX",   "pn": "11173000", "label": "Open Center with PPRV + EVPX (SAE)",     "pump": "fixed",    "pprv": true,  "center": "open",   "evpx": true  }
+      ],
+      "selection_logic": {
+        "standard_no_solenoid_no_evpx":     "EVP_OC_NO_PPRV",
+        "standard_solenoid_no_evpx":        "EVP_OC_PPRV",
+        "standard_solenoid_evpx":           "EVP_OC_PPRV_EVPX",
+        "load_sense_no_solenoid":           "EVP_CC_NO_PPRV",
+        "load_sense_solenoid":              "EVP_CC_PPRV"
+      },
+      "conversion_kit": {
+        "pn": "11177668",
+        "label": "Open Center ↔ Closed Center conversion kit"
+      }
+    },
+
+    "EVPX": {
+      "description": "Electric unload valve (solenoid coil)",
+      "items": [
+        { "id": "EVPX_12V", "pn": "11172430", "label": "EVPX coil 12 Vcc", "voltage": "12v" },
+        { "id": "EVPX_24V", "pn": "11172429", "label": "EVPX coil 24 Vcc", "voltage": "24v" }
+      ]
+    },
+
+    "EVB": {
+      "description": "Work section body (Cuerpo de Trabajo)",
+      "items": [
+        { "id": "EVB_LOW_MECH", "pn": "11168504", "label": "Low body – Mechanical (SAE)",         "actuation": "mechanical",    "body": "low",    "pvlp_capable": false },
+        { "id": "EVB_MED_MECH", "pn": "11168502", "label": "Medium body – Mechanical (SAE)",      "actuation": "mechanical",    "body": "medium", "pvlp_capable": true  },
+        { "id": "EVB_LOW_EH",   "pn": "11168507", "label": "Low body – Electro-hydraulic (SAE)",  "actuation": "electrohydraulic", "body": "low",  "pvlp_capable": false },
+        { "id": "EVB_MED_EH",   "pn": "11168508", "label": "Medium body – Electro-hydraulic (SAE)","actuation": "electrohydraulic","body": "medium","pvlp_capable": true  }
+      ],
+      "rules": {
+        "pvlp_requires_medium_body": true,
+        "eh_actuation_types": ["eh_prop", "eh_onoff", "hydraulic", "pneumatic", "electropneu"]
+      }
+    },
+
+    "PVLP": {
+      "description": "Shock valve (válvula de choque)",
+      "note": "Fixed pressure settings — part number encodes the bar value.",
+      "items": [
+        { "id": "PVLP_32",       "pn": "157B2032", "bar": 32,  "label": "PVLP 32 bar [460 psi]"   },
+        { "id": "PVLP_50",       "pn": "157B2050", "bar": 50,  "label": "PVLP 50 bar [725 psi]"   },
+        { "id": "PVLP_63",       "pn": "157B2063", "bar": 63,  "label": "PVLP 63 bar [914 psi]"   },
+        { "id": "PVLP_80",       "pn": "157B2080", "bar": 80,  "label": "PVLP 80 bar [1160 psi]"  },
+        { "id": "PVLP_100",      "pn": "157B2100", "bar": 100, "label": "PVLP 100 bar [1450 psi]" },
+        { "id": "PVLP_125",      "pn": "157B2125", "bar": 125, "label": "PVLP 125 bar [1813 psi]" },
+        { "id": "PVLP_140",      "pn": "157B2140", "bar": 140, "label": "PVLP 140 bar [2031 psi]" },
+        { "id": "PVLP_150",      "pn": "157B2150", "bar": 150, "label": "PVLP 150 bar [2175 psi]" },
+        { "id": "PVLP_160",      "pn": "157B2160", "bar": 160, "label": "PVLP 160 bar [2320 psi]" },
+        { "id": "PVLP_175",      "pn": "157B2175", "bar": 175, "label": "PVLP 175 bar [2538 psi]" },
+        { "id": "PVLP_190",      "pn": "157B2190", "bar": 190, "label": "PVLP 190 bar [2755 psi]" },
+        { "id": "PVLP_210",      "pn": "157B2210", "bar": 210, "label": "PVLP 210 bar [3045 psi]" },
+        { "id": "PVLP_230",      "pn": "157B2230", "bar": 230, "label": "PVLP 230 bar [3335 psi]" },
+        { "id": "PVLP_240",      "pn": "157B2240", "bar": 240, "label": "PVLP 240 bar [3480 psi]" },
+        { "id": "PVLP_250",      "pn": "157B2250", "bar": 250, "label": "PVLP 250 bar [3625 psi]" },
+        { "id": "PVLP_265",      "pn": "157B2265", "bar": 265, "label": "PVLP 265 bar [3845 psi]" },
+        { "id": "PVLP_280",      "pn": "157B2280", "bar": 280, "label": "PVLP 280 bar [4061 psi]" },
+        { "id": "PVLP_300",      "pn": "157B2300", "bar": 300, "label": "PVLP 300 bar [4351 psi]" },
+        { "id": "PVLP_320",      "pn": "157B2320", "bar": 320, "label": "PVLP 320 bar [4641 psi]" },
+        { "id": "PVLP_ADJ_LOW",  "pn": "11006594", "bar": null,"label": "Adjustable PVLP 121–250 bar" },
+        { "id": "PVLP_ADJ_HIGH", "pn": "11006596", "bar": null,"label": "Adjustable PVLP 251–285 bar" },
+        { "id": "PVLA",          "pn": "157B2001", "bar": null,"label": "PVLA – Anti-cavitation valve" },
+        { "id": "PVLP_PLUG",     "pn": "11177714", "bar": null,"label": "Cavity plug (no valve)" }
+      ]
+    },
+
+    "EVBS": {
+      "description": "Main spool assemblies (Vástagos)",
+      "note": "Selection matrix: Actuation × Center × Flow → Part Number",
+      "items": [
+        { "id": "EVBS_MECH_CL_25",   "pn": "11169733", "actuation": "mechanical", "center": "closed", "flow_lpm": 25  },
+        { "id": "EVBS_MECH_CL_60",   "pn": "11169741", "actuation": "mechanical", "center": "closed", "flow_lpm": 60  },
+        { "id": "EVBS_MECH_CL_100",  "pn": "11182571", "actuation": "mechanical", "center": "closed", "flow_lpm": 100 },
+        { "id": "EVBS_MECH_RS_25",   "pn": "11169730", "actuation": "mechanical", "center": "restricted", "flow_lpm": 25 },
+        { "id": "EVBS_MECH_RS_80",   "pn": "11169743", "actuation": "mechanical", "center": "restricted", "flow_lpm": 80 },
+        { "id": "EVBS_MECH_OP_25",   "pn": "11195820", "actuation": "mechanical", "center": "open", "flow_lpm": 25  },
+        { "id": "EVBS_MECH_OP_60",   "pn": "11195822", "actuation": "mechanical", "center": "open", "flow_lpm": 60  },
+        { "id": "EVBS_MECH_OP_100",  "pn": "11182572", "actuation": "mechanical", "center": "open", "flow_lpm": 100 },
+        { "id": "EVBS_MECH_DT_CL_25",  "pn": "11170634", "actuation": "mechanical_detent", "center": "closed", "flow_lpm": 25  },
+        { "id": "EVBS_MECH_DT_CL_60",  "pn": "11170642", "actuation": "mechanical_detent", "center": "closed", "flow_lpm": 60  },
+        { "id": "EVBS_MECH_DT_CL_100", "pn": "11182609", "actuation": "mechanical_detent", "center": "closed", "flow_lpm": 100 },
+        { "id": "EVBS_MECH_DT_RS_80",  "pn": "11170644", "actuation": "mechanical_detent", "center": "restricted", "flow_lpm": 80 },
+        { "id": "EVBS_MECH_DT_OP_25",  "pn": "11195825", "actuation": "mechanical_detent", "center": "open", "flow_lpm": 25  },
+        { "id": "EVBS_MECH_DT_OP_60",  "pn": "11195827", "actuation": "mechanical_detent", "center": "open", "flow_lpm": 60  },
+        { "id": "EVBS_MECH_DT_OP_100", "pn": "11182610", "actuation": "mechanical_detent", "center": "open", "flow_lpm": 100 },
+        { "id": "EVBS_MECH_EX_CL_100", "pn": "11187072", "actuation": "mechanical_exposed", "center": "closed", "flow_lpm": 100 },
+        { "id": "EVBS_MECH_EX_RS_80",  "pn": "11170755", "actuation": "mechanical_exposed", "center": "restricted", "flow_lpm": 80 },
+        { "id": "EVBS_MECH_EX_OP_25",  "pn": "11195830", "actuation": "mechanical_exposed", "center": "open", "flow_lpm": 25  },
+        { "id": "EVBS_MECH_EX_OP_60",  "pn": "11195832", "actuation": "mechanical_exposed", "center": "open", "flow_lpm": 60  },
+        { "id": "EVBS_MECH_EX_OP_100", "pn": "11187061", "actuation": "mechanical_exposed", "center": "open", "flow_lpm": 100 },
+        { "id": "EVBS_EHP_CL_25",  "pn": "11170449", "actuation": "eh_prop", "center": "closed", "flow_lpm": 25  },
+        { "id": "EVBS_EHP_CL_60",  "pn": "11170457", "actuation": "eh_prop", "center": "closed", "flow_lpm": 60  },
+        { "id": "EVBS_EHP_CL_100", "pn": "11182178", "actuation": "eh_prop", "center": "closed", "flow_lpm": 100 },
+        { "id": "EVBS_EHP_RS_80",  "pn": "11170459", "actuation": "eh_prop", "center": "restricted", "flow_lpm": 80 },
+        { "id": "EVBS_EHP_OP_25",  "pn": "11182175", "actuation": "eh_prop", "center": "open", "flow_lpm": 25  },
+        { "id": "EVBS_EHP_OP_60",  "pn": "11134906", "actuation": "eh_prop", "center": "open", "flow_lpm": 60  },
+        { "id": "EVBS_EHP_OP_100", "pn": "11182177", "actuation": "eh_prop", "center": "open", "flow_lpm": 100 },
+        { "id": "EVBS_EHO_CL_25",  "pn": "11192207", "actuation": "eh_onoff", "center": "closed", "flow_lpm": 25  },
+        { "id": "EVBS_EHO_CL_60",  "pn": "11192252", "actuation": "eh_onoff", "center": "closed", "flow_lpm": 60  },
+        { "id": "EVBS_EHO_CL_80",  "pn": "11192257", "actuation": "eh_onoff", "center": "closed", "flow_lpm": 80  },
+        { "id": "EVBS_EHO_CL_100", "pn": "11192264", "actuation": "eh_onoff", "center": "closed", "flow_lpm": 100 },
+        { "id": "EVBS_EHO_RS_80",  "pn": "11192260", "actuation": "eh_onoff", "center": "restricted", "flow_lpm": 80 },
+        { "id": "EVBS_EHO_OP_25",  "pn": "11192208", "actuation": "eh_onoff", "center": "open", "flow_lpm": 25  },
+        { "id": "EVBS_EHO_OP_60",  "pn": "11192262", "actuation": "eh_onoff", "center": "open", "flow_lpm": 60  },
+        { "id": "EVBS_EHO_OP_100", "pn": "11192265", "actuation": "eh_onoff", "center": "open", "flow_lpm": 100 }
+      ]
+    },
+
+    "ACTUATORS": {
+      "description": "Actuator modules mounted on work sections",
+      "items": [
+        { "id": "EVOS_STD",    "pn": "11172533", "type": "mechanical", "label": "EVOS – Standard actuator (no lever)" },
+        { "id": "EVOS_LEVER",  "pn": "11175314", "type": "mechanical", "label": "EVOS – With lever" },
+        { "id": "EVOS_ROBUST", "pn": "11227308", "type": "mechanical", "label": "EVOS – With robust lever" },
+        { "id": "EVOS_THRU",   "pn": "11175233", "type": "mechanical", "label": "EVOS – Through action" },
+        { "id": "EVME_SPRING", "pn": "11169579", "type": "mechanical", "label": "EVME – Spring center / detent" },
+        { "id": "EVME_THRU",   "pn": "11169580", "type": "mechanical", "label": "EVME – Through action" },
+        { "id": "EVME_MICRO",  "pn": "11170841", "type": "mechanical", "label": "EVME – Micro switch NO" },
+        { "id": "EVM_PLAIN",   "pn": "11119157", "type": "mechanical", "label": "EVM – Without lever" },
+        { "id": "EVM_LEVER",   "pn": "11167001", "type": "mechanical", "label": "EVM – With lever" },
+        { "id": "EVM_SCREW",   "pn": "11145204", "type": "mechanical", "label": "EVM – With adjustment screws" },
+        { "id": "EVM_FULL",    "pn": "11167002", "type": "mechanical", "label": "EVM – Adjustment screws + lever" },
+        { "id": "EVC",         "pn": "11171318", "type": "cover",      "label": "EVC – Cover (no actuation)" },
+        { "id": "EVH_SAE",     "pn": "11169487", "type": "hydraulic",  "label": "EVH – Hydraulic (9/16-18 UNF)" },
+        { "id": "EVH_BSP",     "pn": "11169486", "type": "hydraulic",  "label": "EVH – Hydraulic (G1/4 BSP)" },
+        { "id": "EVHC_12V",    "pn": "11162297", "type": "eh_prop",    "label": "EVHC – Proportional 12 Vcc DEUTSCH", "voltage": "12v" },
+        { "id": "EVHC_24V",    "pn": "11162298", "type": "eh_prop",    "label": "EVHC – Proportional 24 Vcc DEUTSCH", "voltage": "24v" },
+        { "id": "EVHCO_12V",   "pn": "11186922", "type": "eh_onoff",   "label": "EVHCO – ON/OFF 12 Vcc DEUTSCH",      "voltage": "12v" },
+        { "id": "EVHCO_24V",   "pn": "11186911", "type": "eh_onoff",   "label": "EVHCO – ON/OFF 24 Vcc DEUTSCH",      "voltage": "24v" },
+        { "id": "EVPN",        "pn": "11198492", "type": "pneumatic",  "label": "EVPN – Pneumatic (BSP)" },
+        { "id": "EVPN_EP_12V", "pn": "11193722", "type": "electropneu","label": "EVPN – Electro-pneumatic 12 Vcc DEUTSCH", "voltage": "12v" },
+        { "id": "EVPN_EP_24V", "pn": "11193723", "type": "electropneu","label": "EVPN – Electro-pneumatic 24 Vcc DEUTSCH", "voltage": "24v" },
+        { "id": "EVPN_EP_AMP", "pn": "11194345", "type": "electropneu","label": "EVPN – Electro-pneumatic 24 Vcc AMP",     "voltage": "24v_amp" }
+      ]
+    },
+
+    "EVO": {
+      "description": "End plate (Tapa final)",
+      "items": [
+        { "id": "EVO_STD",    "pn": "11191585", "label": "EVO – Standard (no LX port)" },
+        { "id": "EVO_LX_BSP", "pn": "11191583", "label": "EVO – With LX port 1/8 BSP" },
+        { "id": "EVO_LX_SAE", "pn": "11191582", "label": "EVO – With LX port 7/16-20 SAE" },
+        { "id": "EVO_PNEU",   "pn": "11191584", "label": "EVO – With pneumatic port 1/8 BSP" }
+      ]
+    },
+
+    "EVAS": {
+      "description": "Assembly tie rod kit (Kit de Tirantes) — select based on number of EVB sections",
+      "items": [
+        { "id": "EVAS_1",  "pn": "11173102", "num_evb": 1  },
+        { "id": "EVAS_2",  "pn": "11173103", "num_evb": 2  },
+        { "id": "EVAS_3",  "pn": "11173104", "num_evb": 3  },
+        { "id": "EVAS_4",  "pn": "11173105", "num_evb": 4  },
+        { "id": "EVAS_5",  "pn": "11173106", "num_evb": 5  },
+        { "id": "EVAS_6",  "pn": "11173107", "num_evb": 6  },
+        { "id": "EVAS_7",  "pn": "11173108", "num_evb": 7  },
+        { "id": "EVAS_8",  "pn": "11173109", "num_evb": 8  },
+        { "id": "EVAS_9",  "pn": "11173110", "num_evb": 9  },
+        { "id": "EVAS_10", "pn": "11173111", "num_evb": 10 },
+        { "id": "EVAS_11", "pn": "11173112", "num_evb": 11 },
+        { "id": "EVAS_12", "pn": "11173113", "num_evb": 12 }
+      ]
+    }
+  },
+
+  "validation_rules": [
+    {
+      "rule_id": "VR_01",
+      "description": "PVLP/PVLA requires medium body EVB",
+      "condition": "pvlp !== 'none'",
+      "requires": "evb_body === 'medium'",
+      "error": "Shock/anti-cavitation valves require a medium body work section (EVB)."
+    },
+    {
+      "rule_id": "VR_02",
+      "description": "EVPX only available with Open Center EVP and PPRV",
+      "condition": "evpx === true",
+      "requires": "evp_center === 'open' && evp_pprv === true",
+      "error": "EVPX requires Open Center EVP with PPRV. Not compatible with Load Sense path."
+    },
+    {
+      "rule_id": "VR_03",
+      "description": "EH actuation requires PPRV in EVP",
+      "condition": "actuation_type in ['eh_prop','eh_onoff','hydraulic']",
+      "requires": "evp_pprv === true",
+      "error": "Electro-hydraulic or hydraulic actuation requires PPRV in the pump inlet module (EVP)."
+    },
+    {
+      "rule_id": "VR_04",
+      "description": "EH actuation requires electro-hydraulic EVB body",
+      "condition": "actuation_type in ['eh_prop','eh_onoff']",
+      "requires": "evb_actuation_type === 'electrohydraulic'",
+      "error": "EVHC/EVHCO actuators require an electro-hydraulic work section body (EVB)."
+    },
+    {
+      "rule_id": "VR_05",
+      "description": "Number of sections must be between 1 and 12",
+      "condition": "always",
+      "requires": "num_sections >= 1 && num_sections <= 12",
+      "error": "ECO80 supports 1 to 12 work sections."
+    },
+    {
+      "rule_id": "VR_06",
+      "description": "Spool center must be closed or restricted for Load Sense path",
+      "condition": "path === 'load_sense'",
+      "requires": "spool_center in ['closed','restricted','closed_3w']",
+      "warning": "Open center spools are unusual in Load Sense systems. Verify your application requirement."
+    }
+  ]
+}
