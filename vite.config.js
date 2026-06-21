@@ -8,4 +8,5 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] })
   ],
+  base: '/SUBWAYECO80/', // <--- AGREGA ESTA LÍNEA AQUÍ
 })
