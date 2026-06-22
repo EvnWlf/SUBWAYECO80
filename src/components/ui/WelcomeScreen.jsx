@@ -27,7 +27,7 @@ export default function WelcomeScreen({ onDesign }) {
     <div style={styles.root}>
       <div style={{ ...styles.content, opacity: visible ? 1 : 0, transform: visible ? 'none' : 'translateY(12px)', transition: 'all 0.9s ease' }}>
 
-<img src="/src/assets/LionStoreLogo.svg" alt="Lion Store Parts" style={styles.logo} />
+<img src="src/assets/LionStoreLogo.svg" alt="Lion Store Parts" style={styles.logo} />
 
         {!ready && (
           <>
